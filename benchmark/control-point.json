@@ -1,0 +1,9 @@
+{
+  "matches": 24,
+  "tick_rate": 60,
+  "control_ticks": {
+    "Direct": 130,
+    "Predictive": 2372
+  },
+  "contested_ticks": 33544
+}

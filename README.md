@@ -1,6 +1,28 @@
-**Deadline Notice:** The first submission for agents must occur by June 1st. No changes will be accepted after June 19th. For further details, please refer to the Discussion Tab.
-
 # UPC_PyGame Simulation
+
+This project began as coursework for the UPC Python programming course. The original multiplayer arena, agent API and Pygame interface are documented below. A separate headless control-point benchmark extends the project with a different objective and a reproducible way to compare agent policies.
+
+## Control-point benchmark
+
+Two agents compete to be the sole occupant of an active zone. The zone can move every five seconds, obstacles block direct approaches, and a contested zone awards no points. A direct-steering baseline is compared with an obstacle-aware policy that anticipates blocked routes and takes a detour. Each seed runs twice with the starting positions exchanged.
+
+![Left, the arena with obstacles, start positions and possible control points. Right, measured share of control-point occupancy.](benchmark/control-point.svg)
+
+Across 24 thirty-second matches, the direct policy controlled the zone for 130 ticks and the obstacle-aware policy for 2,372 ticks. The zone was contested for 33,544 of 43,200 ticks. These figures describe this layout and seed set.
+
+```bash
+python -m pip install -r requirements.txt
+python control_point.py
+python benchmark_figure.py
+```
+
+[Per-match results](benchmark/control-point.csv) · [Aggregate results](benchmark/control-point.json)
+
+## Original coursework
+
+The original submission notice and multiplayer documentation follow.
+
+**Deadline Notice:** The first submission for agents must occur by June 1st. No changes will be accepted after June 19th. For further details, please refer to the Discussion Tab.
 
 ## Updates
 - **Agent Mapping:** When players connect, the system now records the originating agent/program name along with the player UUID. This ensures that even when a player reconnects (receiving a new UUID), their statistics can be traced back to their originating agent.
