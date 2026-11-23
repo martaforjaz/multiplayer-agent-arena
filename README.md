@@ -2,6 +2,14 @@
 
 This project began as coursework for the UPC Python programming course. The original multiplayer arena, agent API and Pygame interface are documented below. A separate headless control-point benchmark extends the project with a different objective and a reproducible way to compare agent policies.
 
+## Repository guide
+
+- [Phase 1 prototype](phase1/README.md) is the first coursework submission. It runs locally with Pygame and an in-process bot.
+- Phase 2 is the root application. It adds a FastAPI multiplayer server, a readiness lobby, and post-match statistics.
+- The control-point benchmark is the later extension. It compares steering policies without starting the visualizer.
+
+Both phases use the dependencies declared at the root.
+
 ## Control-point benchmark
 
 Two agents compete to be the sole occupant of an active zone. The zone can move every five seconds, obstacles block direct approaches, and a contested zone awards no points. A direct-steering baseline is compared with an obstacle-aware policy that anticipates blocked routes and takes a detour. Each seed runs twice with the starting positions exchanged.
