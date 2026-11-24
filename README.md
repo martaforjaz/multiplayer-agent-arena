@@ -1,4 +1,6 @@
-# UPC_PyGame Simulation
+# Multiplayer Agent Arena
+
+![Multiplayer Agent Arena illustration](benchmark/arena-banner.svg)
 
 This project began as coursework for the UPC Python programming course. The original multiplayer arena, agent API and Pygame interface are documented below. A separate headless control-point benchmark extends the project with a different objective and a reproducible way to compare agent policies.
 
@@ -26,11 +28,7 @@ python benchmark_figure.py
 
 [Per-match results](benchmark/control-point.csv) · [Aggregate results](benchmark/control-point.json)
 
-## Original coursework
-
-The original submission notice and multiplayer documentation follow.
-
-**Deadline Notice:** The first submission for agents must occur by June 1st. No changes will be accepted after June 19th. For further details, please refer to the Discussion Tab.
+## Multiplayer coursework
 
 ## Updates
 - **Agent Mapping:** When players connect, the system now records the originating agent/program name along with the player UUID. This ensures that even when a player reconnects (receiving a new UUID), their statistics can be traced back to their originating agent.
@@ -88,7 +86,8 @@ The system consists of three main components:
 
 1. **Clone the Repository:**
     ```bash
-    git clone git@github.com:DaniFabi24/UPC_PyGame.git
+    git clone https://github.com/martaforjaz/multiplayer-agent-arena.git
+    cd multiplayer-agent-arena
     ```
 
 2. **Create and Activate a Virtual Environment:**
@@ -136,10 +135,12 @@ These scripts will:
 
 2. **Start Agent(s) in Separate Terminals:**
     ```bash
-    python agents/dummy1.py
-    python agents/dummy2.py
+    python -m agents.dummy1
+    python -m agents.dummy2
     ```
     Each agent will connect to the running game server.
+
+Run `python main.py --headless` to launch the Phase 2 API and physics without a window. The OpenAPI explorer is at [localhost:8000/docs](http://127.0.0.1:8000/docs).
 
 ## API Overview
 
@@ -177,5 +178,3 @@ Adjust key game parameters in [`src/settings.py`](src/settings.py), such as:
 Feel free to report issues or suggest improvements using:
 - [Issue Template](.github/ISSUE_TEMPLATE/general_issue.md)
 - [Discussion Template](.github/DISCUSSIONS_TEMPLATE/general_discussion.md)
-
-Happy gaming and coding – welcome to the best simulation ever!

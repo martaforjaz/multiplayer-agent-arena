@@ -1,44 +1,43 @@
+"""Start the networked arena with or without the Pygame viewer."""
+
+import argparse
 import threading
 import time
+
 import uvicorn
+
 from src.settings import API_HOST, API_PORT
 
-# --- Function to run the API server ---
-def run_api_server():
-    """
-    Starts the FastAPI application using the Uvicorn ASGI server.
-    The API server handles game logic requests and manages the physics engine
-    via FastAPI's startup events (defined in src.api.api_endpoints).
-    """
-    uvicorn.run(
-        "src.api.api_endpoints:app",  # Path to the FastAPI app instance
-        host=API_HOST,                # Host address from settings
-        port=API_PORT,                # Port number from settings
-        log_level="info"              # Logging level for the server
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--headless", action="store_true", help="Run the API and physics without a viewer.")
+    options = parser.parse_args()
+    server = uvicorn.Server(
+        uvicorn.Config("src.api.api_endpoints:app", host=API_HOST, port=API_PORT, log_level="info")
     )
+    if options.headless:
+        server.run()
+        if not server.started:
+            raise SystemExit("The arena API did not start.")
+        return
 
-# --- Main execution block ---
-if __name__ == "__main__":
-    # 1. Start the API server in a separate background thread.
-    #    Setting 'daemon=True' ensures the thread exits when the main program exits.
-    print("Starting API server thread...")
-    api_thread = threading.Thread(target=run_api_server, daemon=True)
+    api_thread = threading.Thread(target=server.run, daemon=True)
     api_thread.start()
+    try:
+        deadline = time.monotonic() + 15
+        while api_thread.is_alive() and not server.started and time.monotonic() < deadline:
+            time.sleep(0.05)
+        if not server.started:
+            raise SystemExit("The arena API did not start. Check whether its port is already in use.")
 
-    # 2. Wait briefly to allow the API server and its startup events (physics engine)
-    #    to initialize before starting the visualizer.
-    print("Waiting for API server to initialize...")
-    time.sleep(5) # Adjust this delay if needed
+        from src.core.game_world import game_world_instance
 
-    # 3. Import the global game world instance.
-    #    This instance is created in src/core/game_world.py and managed by the API server.
-    print("Importing game world instance...")
-    from src.core.game_world import game_world_instance
+        game_world_instance.run_visualizer()
+    finally:
+        server.should_exit = True
+        api_thread.join(timeout=5)
 
-    # 4. Run the Pygame visualizer in the main thread.
-    #    This function contains the main Pygame loop for drawing the game state.
-    #    It blocks execution until the visualizer window is closed.
-    print("Starting visualizer...")
-    game_world_instance.run_visualizer()
 
-    print("Visualizer closed. Main program exiting.")
+if __name__ == "__main__":
+    main()
